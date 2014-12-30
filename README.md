@@ -11,6 +11,7 @@ Marshal and unmarshall data between golang and python
 
 # Notes
 * for unmarshal, supported types are listed below:
+    * None
     * int
     * string
     * unicode
@@ -18,8 +19,9 @@ Marshal and unmarshall data between golang and python
     * list
     * dict
 * for marshal, supported types are listed below:
+    * nil
     * int32
     * float
     * string
-    * slice
+    * slice (with the types above)
     * map (with the types above)
