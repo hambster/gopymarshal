@@ -23,8 +23,8 @@ const (
 )
 
 var (
-	ERR_PARSE   = errors.New("invalid data")
-	ERR_UNKNOWN = errors.New("unknown code")
+	ERR_PARSE        = errors.New("invalid data")
+	ERR_UNKNOWN_CODE = errors.New("unknown code")
 )
 
 // Unmarshal data serialized by python
@@ -61,6 +61,8 @@ func unmarshal(code byte, buffer *bytes.Buffer) (ret interface{}, retErr error) 
 		ret, retErr = readList(buffer)
 	case CODE_DICT:
 		ret, retErr = readDict(buffer)
+	default:
+		retErr = ERR_UNKNOWN_CODE
 	}
 
 	return
