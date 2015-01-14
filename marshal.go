@@ -5,7 +5,6 @@ import (
 	"encoding/binary"
 	"errors"
 	"math"
-	"reflect"
 )
 
 var (
