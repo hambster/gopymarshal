@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	ERR_TYPE = errors.New("unsupport type")
+	ErrType = errors.New("unsupport type")
 )
 
 func Marshal(data interface{}) (ret []byte, retErr error) {
@@ -43,7 +43,7 @@ func marshal(buffer *bytes.Buffer, data interface{}) (ret error) {
 	case map[interface{}]interface{}:
 		ret = writeDict(buffer, data.(map[interface{}]interface{}))
 	default:
-		ret = ERR_TYPE
+		ret = ErrType
 	}
 
 	return
