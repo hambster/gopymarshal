@@ -11,6 +11,10 @@ var (
 	ErrType = errors.New("unsupport type")
 )
 
+func EmptyMap() (ret []byte) {
+    return []byte{CODE_DICT, CODE_STOP}
+}
+
 func Marshal(data interface{}) (ret []byte, retErr error) {
 	if nil == data {
 		return
