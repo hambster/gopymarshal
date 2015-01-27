@@ -46,6 +46,12 @@ func marshal(buffer *bytes.Buffer, data interface{}) (ret error) {
 		ret = writeList(buffer, data.([]interface{}))
 	case map[interface{}]interface{}:
 		ret = writeDict(buffer, data.(map[interface{}]interface{}))
+	case map[string]interface{}:
+		tmp := make(map[interface{}]interface{})
+		for k, v := range data.(map[string]interface{}) {
+			tmp[k] = v
+		}
+		ret = writeDict(buffer, tmp)
 	default:
 		ret = ErrType
 	}
