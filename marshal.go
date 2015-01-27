@@ -12,7 +12,7 @@ var (
 )
 
 func EmptyMap() (ret []byte) {
-    return []byte{CODE_DICT, CODE_STOP}
+	return []byte{CODE_DICT, CODE_STOP}
 }
 
 func Marshal(data interface{}) (ret []byte, retErr error) {
@@ -164,6 +164,8 @@ func isValidData(data interface{}) (ret bool) {
 	case []interface{}:
 		ret = true
 	case map[interface{}]interface{}:
+		ret = true
+	case map[string]interface{}:
 		ret = true
 	}
 
