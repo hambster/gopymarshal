@@ -67,7 +67,7 @@ func writeString(buffer *bytes.Buffer, data string) (ret error) {
 		return
 	}
 
-	if ret = binary.Write(buffer, binary.LittleEndian, len(data)); nil == ret {
+	if ret = binary.Write(buffer, binary.LittleEndian, int32(len(data))); nil == ret {
 		_, ret = buffer.WriteString(data)
 	}
 
