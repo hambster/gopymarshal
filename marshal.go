@@ -35,20 +35,22 @@ func marshal(buffer *bytes.Buffer, data interface{}) (ret error) {
 		return
 	}
 
-	switch data.(type) {
+	switch d := data.(type) {
 	case int32:
-		ret = writeInt32(buffer, data.(int32))
+		ret = writeInt32(buffer, d)
 	case string:
-		ret = writeString(buffer, data.(string))
+		ret = writeString(buffer, d)
+	case []byte:
+		ret = writeBytes(buffer, d)
 	case float64:
-		ret = writeFloat64(buffer, data.(float64))
+		ret = writeFloat64(buffer, d)
 	case []interface{}:
-		ret = writeList(buffer, data.([]interface{}))
+		ret = writeList(buffer, d)
 	case map[interface{}]interface{}:
-		ret = writeDict(buffer, data.(map[interface{}]interface{}))
+		ret = writeDict(buffer, d)
 	case map[string]interface{}:
 		tmp := make(map[interface{}]interface{})
-		for k, v := range data.(map[string]interface{}) {
+		for k, v := range d {
 			tmp[k] = v
 		}
 		ret = writeDict(buffer, tmp)
@@ -65,6 +67,18 @@ func writeInt32(buffer *bytes.Buffer, data int32) (ret error) {
 	}
 
 	ret = binary.Write(buffer, binary.LittleEndian, data)
+	return
+}
+
+func writeBytes(buffer *bytes.Buffer, data []byte) (ret error) {
+	if ret = buffer.WriteByte(CODE_TSTRING); nil != ret {
+		return
+	}
+
+	if ret = binary.Write(buffer, binary.LittleEndian, int32(len(data))); nil == ret {
+		_, ret = buffer.Write(data)
+	}
+
 	return
 }
 
@@ -166,6 +180,8 @@ func isValidData(data interface{}) (ret bool) {
 	case map[interface{}]interface{}:
 		ret = true
 	case map[string]interface{}:
+		ret = true
+	case []byte:
 		ret = true
 	}
 
