@@ -36,8 +36,12 @@ func marshal(buffer *bytes.Buffer, data interface{}) (ret error) {
 	}
 
 	switch d := data.(type) {
+	case int:
+		ret = writeInt32(buffer, int32(d))
 	case int32:
 		ret = writeInt32(buffer, d)
+	case int64:
+		ret = writeInt32(buffer, int32(d))
 	case string:
 		ret = writeString(buffer, d)
 	case []byte:
@@ -108,7 +112,7 @@ func writeList(buffer *bytes.Buffer, data []interface{}) (ret error) {
 	if ret = buffer.WriteByte(CODE_LIST); nil != ret {
 		return
 	}
-	if ret = writeInt32(buffer, int32(listLen)); nil != ret {
+	if ret = marshal(buffer, listLen); nil != ret {
 		return
 	}
 
