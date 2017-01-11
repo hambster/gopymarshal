@@ -49,11 +49,7 @@ func marshal(buffer *bytes.Buffer, data interface{}) (ret error) {
 	case map[interface{}]interface{}:
 		ret = writeDict(buffer, d)
 	case map[string]interface{}:
-		tmp := make(map[interface{}]interface{})
-		for k, v := range d {
-			tmp[k] = v
-		}
-		ret = writeDict(buffer, tmp)
+		ret = writeDictStrInter(buffer, d)
 	default:
 		ret = ErrType
 	}
@@ -107,27 +103,16 @@ func writeFloat64(buffer *bytes.Buffer, data float64) (ret error) {
 }
 
 func writeList(buffer *bytes.Buffer, data []interface{}) (ret error) {
-	listLen := int32(0)
-	for idx := 0; idx < len(data); idx++ {
-		if !isValidData(data[idx]) {
-			continue
-		}
-
-		listLen++
-	}
+	listLen := len(data)
 
 	if ret = buffer.WriteByte(CODE_LIST); nil != ret {
 		return
 	}
-	if ret = writeInt32(buffer, listLen); nil != ret {
+	if ret = writeInt32(buffer, int32(listLen)); nil != ret {
 		return
 	}
 
-	for idx := 0; idx < len(data); idx++ {
-		if !isValidData(data[idx]) {
-			continue
-		}
-
+	for idx := 0; idx < listLen; idx++ {
 		if ret = marshal(buffer, data[idx]); nil != ret {
 			break
 		}
@@ -141,20 +126,18 @@ func writeNone(buffer *bytes.Buffer) (ret error) {
 	return
 }
 
-func writeDict(buffer *bytes.Buffer, data map[interface{}]interface{}) (ret error) {
+func writeDictStrInter(buffer *bytes.Buffer, data map[string]interface{}) (ret error) {
 	if ret = buffer.WriteByte(CODE_DICT); nil != ret {
 		return
 	}
 
 	for k, v := range data {
-		if isValidData(k) && isValidData(v) {
-			if ret = marshal(buffer, k); nil != ret {
-				return
-			}
+		if ret = marshal(buffer, k); nil != ret {
+			return
+		}
 
-			if ret = marshal(buffer, v); nil != ret {
-				return
-			}
+		if ret = marshal(buffer, v); nil != ret {
+			return
 		}
 	}
 
@@ -162,28 +145,21 @@ func writeDict(buffer *bytes.Buffer, data map[interface{}]interface{}) (ret erro
 	return
 }
 
-func isValidData(data interface{}) (ret bool) {
-	if nil == data {
-		ret = true
+func writeDict(buffer *bytes.Buffer, data map[interface{}]interface{}) (ret error) {
+	if ret = buffer.WriteByte(CODE_DICT); nil != ret {
 		return
 	}
 
-	switch data.(type) {
-	case int32:
-		ret = true
-	case string:
-		ret = true
-	case float64:
-		ret = true
-	case []interface{}:
-		ret = true
-	case map[interface{}]interface{}:
-		ret = true
-	case map[string]interface{}:
-		ret = true
-	case []byte:
-		ret = true
+	for k, v := range data {
+		if ret = marshal(buffer, k); nil != ret {
+			return
+		}
+
+		if ret = marshal(buffer, v); nil != ret {
+			return
+		}
 	}
 
+	ret = buffer.WriteByte(CODE_STOP)
 	return
 }
