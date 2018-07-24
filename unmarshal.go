@@ -28,8 +28,7 @@ var (
 )
 
 // Unmarshal data serialized by python
-func Unmarshal(data []byte) (ret interface{}, retErr error) {
-	buffer := bytes.NewBuffer(data)
+func Unmarshal(buffer *bytes.Buffer) (ret interface{}, retErr error) {
 	code, err := buffer.ReadByte()
 	if nil != err {
 		retErr = err
