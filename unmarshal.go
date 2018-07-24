@@ -28,14 +28,13 @@ var (
 )
 
 // Unmarshal data serialized by python
-func Unmarshal(data []byte) (ret interface{}, retErr error) {
+func Unmarshal(buffer *bytes.Buffer) (ret interface{}, retErr error) {
 	ret, _, retErr = Unmarshal2(data)
 	return
 }
 
 // Unmarshal data serialized by python, returning the unused portion.
-func Unmarshal2(data []byte) (ret interface{}, remainder []byte, retErr error) {
-	buffer := bytes.NewBuffer(data)
+func Unmarshal2(buffer *bytes.Buffer) (ret interface{}, remainder []byte, retErr error) {
 	code, err := buffer.ReadByte()
 	if nil != err {
 		retErr = err
