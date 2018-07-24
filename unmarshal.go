@@ -29,12 +29,19 @@ var (
 
 // Unmarshal data serialized by python
 func Unmarshal(buffer *bytes.Buffer) (ret interface{}, retErr error) {
+	ret, _, retErr = Unmarshal2(data)
+	return
+}
+
+// Unmarshal data serialized by python, returning the unused portion.
+func Unmarshal2(buffer *bytes.Buffer) (ret interface{}, remainder []byte, retErr error) {
 	code, err := buffer.ReadByte()
 	if nil != err {
 		retErr = err
 	}
 
 	ret, retErr = unmarshal(code, buffer)
+	remainder = buffer.Bytes()
 	return
 }
 
