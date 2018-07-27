@@ -29,7 +29,7 @@ var (
 
 // Unmarshal data serialized by python
 func Unmarshal(buffer *bytes.Buffer) (ret interface{}, retErr error) {
-	ret, _, retErr = Unmarshal2(data)
+	ret, _, retErr = Unmarshal2(buffer)
 	return
 }
 
